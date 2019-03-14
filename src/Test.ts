@@ -13,6 +13,8 @@ export async function test(type: Test, arg: string): Promise<boolean> {
   switch(type) {
     case Test.DIR_EXISTS:
       return isDirectory(arg)
+    default:
+      return Promise.resolve(false)
   }
 }
 
