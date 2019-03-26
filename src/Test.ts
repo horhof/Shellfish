@@ -1,4 +1,8 @@
-import * as nfs from 'fs'
+import * as cp from 'child_process'
+import * as Debug from 'debug'
+
+const log = Debug(`Shellfish:Test`)
+log
 
 export enum Test {
   ANY_FILE_EXISTS = 'a',
@@ -9,17 +13,15 @@ export enum Test {
   READABLE_FILE_EXISTS = 'r',
 }
 
-export async function test(type: Test, arg: string): Promise<boolean> {
-  switch(type) {
-    case Test.DIR_EXISTS:
-      return isDirectory(arg)
-    default:
-      return Promise.resolve(false)
-  }
+export enum TestErr {
 }
 
-async function isDirectory(path: string): Promise<boolean> {
+export async function test(type: Test, arg: string): Promise<boolean> {
   return new Promise(resolve => {
-    nfs.readdir(path, null, err => resolve(!err))
+    const cmd = `test -${type} ${arg}`
+    cp.exec(cmd, err => {
+      const success = !err
+      resolve(success)
+    })
   })
 }
